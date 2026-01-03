@@ -2,6 +2,7 @@
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
+import CodeEditor from "@/app/components/Editor";
 
 let socket: Socket | null = null;
 
@@ -31,28 +32,67 @@ export default function RoomPage() {
       socket = null;
     };
   }, [roomId]);
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newCode = e.target.value;
-    console.log(newCode);
-    setCode(newCode);
+  // const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  //   const newCode = e.target.value;
+  //   console.log(newCode);
+  //   setCode(newCode);
 
-    socket?.emit("code_change", {
-      roomId,
-      code: newCode,
-    });
-  };
+  //   socket?.emit("code_change", {
+  //     roomId,
+  //     code: newCode,
+  //   });
+  // };
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 p-6">
       <h1 className="text-xl font-semibold mb-4">
         Room: <span className="text-emerald-400">{roomId}</span>
       </h1>
 
-      <textarea
+      <CodeEditor
+        roomId={roomId}
+        socket={socket}
+        code={code}
+        onChange={setCode}
+      />
+      {/* <Editor
+        className="w-full h-[70vh] bg-slate-900 border border-slate-700 rounded-md p-4 font-mono text-sm outline-none focus:ring-2 focus:ring-emerald-500"
+        height="90vh"
+        theme="vs-dark"
+        defaultLanguage="javascript"
+        defaultValue="//Write your code here"
+        value={code}
+        onChange={(value) => {
+          if (typeof value === "string") {
+            isLocalChange.current = true;
+            setCode(value);
+            socket?.emit("code_change", {
+              roomId,
+              code: value,
+            });
+            setTimeout(() => {
+              isLocalChange.current = false;
+            }, 50);
+          }
+        }}
+        options={{
+          fontSize: 14,
+          minimap: { enabled: false },
+          automaticLayout: true,
+          quickSuggestions: false,
+          suggestOnTriggerCharacters: false,
+          acceptSuggestionOnEnter: "off",
+          tabCompletion: "off",
+          wordBasedSuggestions: "off",
+          contextmenu: false,
+        }}
+      /> */}
+
+      {/* <textarea
         className="w-full h-[70vh] bg-slate-900 border border-slate-700 rounded-md p-4 font-mono text-sm outline-none focus:ring-2 focus:ring-emerald-500"
         value={code}
         onChange={handleChange}
         placeholder="// Type here. Open this room in another tab."
-      />
+      /> */}
     </main>
   );
 }
