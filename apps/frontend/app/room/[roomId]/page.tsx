@@ -42,11 +42,19 @@ export default function RoomPage() {
     });
   };
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 p-6">
-      <h1 className="text-xl font-semibold mb-4">
-        Room: <span className="text-emerald-400">{roomId}</span>
-      </h1>
-      <CodeEditor code={code} onChange={handleChange} />
-    </main>
+    <>
+      <main className="min-h-screen bg-slate-950 text-slate-100 p-6">
+        <h1 className="text-xl font-semibold mb-4">
+          Room: <span className="text-emerald-400">{roomId}</span>
+        </h1>
+        <div className="flex gap-2 h-[70vh]">
+          <CodeEditor code={code} onChange={handleChange} />
+          <aside className="w-80 border border-red-800 rounded-md p-4 text-sm text-slate-400">
+            <p className="font-semibold mb-2">Interview Panel</p>
+            <p>Chat, hints, AI feedback coming next.</p>
+          </aside>
+        </div>
+      </main>
+    </>
   );
 }
