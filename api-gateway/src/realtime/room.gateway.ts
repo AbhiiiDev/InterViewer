@@ -8,11 +8,13 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @WebSocketGateway({
   cors: { origin: '*' },
 })
 export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
+  constructor(private readonly prisma: PrismaService) {}
   @WebSocketServer()
   server: Server;
   private rooms = new Map<string, { code: string }>();
