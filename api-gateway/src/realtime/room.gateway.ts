@@ -31,18 +31,37 @@ export class RoomGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {
     const { roomId } = data;
     await client.join(roomId);
+    let interview = await this.prisma.interview.findUnique({
+      where: { roomId },
+    });
+    if (!interview) {
+      interview = await this.prisma.interview.create({
+        data: { roomId },
+      });
+    }
+
     const room = this.rooms.get(roomId);
     client.emit('room_state', {
       code: room?.code ?? '',
     });
   }
   @SubscribeMessage('code_change')
-  handleMessage(
+  async handleMessage(
     @MessageBody() data: { roomId: string; code: string },
     @ConnectedSocket() client: Socket,
   ) {
     // client.emit('code');
     const { roomId, code } = data;
+    const interview = await this.prisma.interview.findUnique({
+      where: { roomId },
+    });
+    if (!interview) return;
+    await this.prisma.codeSnapshot.create({
+      data: {
+        interviewId: interview.id,
+        code,
+      },
+    });
     const room = this.rooms.get(roomId) ?? { code: '' };
     room.code = code;
     this.rooms.set(roomId, room);
